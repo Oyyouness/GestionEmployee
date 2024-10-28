@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+
 @Service
 public class EmployeeService {
     @Autowired
@@ -18,9 +21,14 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
+    @Autowired
+    private MessageSource messageSource;
+
     public Employee getEmployeeById(Long id) {
         return employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("employee.notFound"));
+                .orElseThrow(() -> new RuntimeException(
+                        messageSource.getMessage("employee.notFound", null, LocaleContextHolder.getLocale())
+                ));
     }
 
     public Employee addEmployee(Employee employee) {
@@ -37,4 +45,6 @@ public class EmployeeService {
     public void deleteEmployee(Long id) {
         employeeRepository.deleteById(id);
     }
+
+
 }
